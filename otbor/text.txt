@@ -1,0 +1,36 @@
+    def solve_task(self):
+        def task(i):
+            optimal = self.search(i)
+            state = optimal[0]
+            action = optimal[1]
+            value = optimal[2]
+            return {'state': state, 'action': action, 'value': value}
+
+        # Define the number of threads for parallel processing
+        num_threads = 11  # Adjust this number based on your machine's capability
+
+        results = []
+
+        for i in tqdm(range(400)):
+            results.append(task(i))
+
+        with open('submit400.json', 'w') as f:
+            json.dump(results, f)
+
+        # Using ThreadPoolExecutor for parallel processing
+        with ThreadPoolExecutor(max_workers=num_threads) as executor:
+            # Using list comprehension to create futures
+            futures = [executor.submit(task, i) for i in range(400, len(self.mdps))]
+
+            # Gathering results
+            results += [future.result() for future in tqdm(futures, total=len(self.mdps))]
+
+        # Save the results to a JSON file
+        print('Evaluation has finished')
+        with open('submit.json', 'w') as f: 
+            json.dump(results, f)
+
+modify this method such that, i can save intermediate results if i have to abort the function
+
+
+а
